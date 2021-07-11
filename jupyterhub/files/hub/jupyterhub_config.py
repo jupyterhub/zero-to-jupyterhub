@@ -326,8 +326,6 @@ c.JupyterHub.services = []
 
 if get_config("cull.enabled", False):
     cull_cmd = ["python3", "-m", "jupyterhub_idle_culler"]
-    base_url = c.JupyterHub.get("base_url", "/")
-    cull_cmd.append("--url=http://localhost:8081" + url_path_join(base_url, "hub/api"))
 
     cull_timeout = get_config("cull.timeout")
     if cull_timeout:
@@ -350,6 +348,16 @@ if get_config("cull.enabled", False):
     cull_max_age = get_config("cull.maxAge")
     if cull_max_age:
         cull_cmd.append("--max-age=%s" % cull_max_age)
+
+    cull_proto = "http"
+    if get_config("cull.ssl_enabled", False):
+        cull_cmd.append("--ssl-enabled")
+        cull_proto = "https"
+
+    base_url = c.JupyterHub.get("base_url", "/")
+    cull_cmd.append(
+        f"--url={cull_proto}://localhost:8081" + url_path_join(base_url, "hub/api")
+    )
 
     c.JupyterHub.services.append(
         {

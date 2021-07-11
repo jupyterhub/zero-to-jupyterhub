@@ -538,6 +538,7 @@ ingress:
 
 cull:
   enabled: true
+  ssl_enabled: false
   users: false
   removeNamedServers: false
   timeout: 3600

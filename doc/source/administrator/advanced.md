@@ -206,7 +206,7 @@ have defined as well and the `hub` k8s ServiceAccount that may be named
 something slightly different if `fullnameOverride` or `nameOverride` has been
 used.
 
-```handlebars
+```{code-block} yaml
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:

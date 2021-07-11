@@ -536,14 +536,21 @@ ingress:
   pathType: Prefix
   tls: []
 
+# cull relates to the jupyterhub-idle-culler service, responsible for evicting
+# inactive singleuser pods.
+#
+# The configuration below, except for enabled, corresponds to command-line flags
+# for jupyterhub-idle-culler as documented here:
+# https://github.com/jupyterhub/jupyterhub-idle-culler#as-a-standalone-script
+#
 cull:
   enabled: true
-  users: false
-  removeNamedServers: false
-  timeout: 3600
-  every: 600
-  concurrency: 10
-  maxAge: 0
+  users: false # --cull-users
+  removeNamedServers: false # --remove-named-servers
+  timeout: 3600 # --timeout
+  every: 600 # --cull-every
+  concurrency: 10 # --concurrency
+  maxAge: 0 # --max-age
 
 debug:
   enabled: false

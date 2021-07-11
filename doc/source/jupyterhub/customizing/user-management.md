@@ -7,38 +7,43 @@ permissions on JupyterHub.
 
 ## Culling user pods
 
-JupyterHub will automatically delete any user pods that have no activity
-for a period of time. This helps free up computational resources and keeps
-costs down if you are using an autoscaling cluster.
-When these users navigate back to your JupyterHub, they will
-have to start their server again, and the state of their previous session
-(variables they've created, any in-memory data, etc)
-will be lost. This is known as _culling_.
+When users work with a JupyterHub deployment, will they reliably shut down their
+servers manually when finished? Probably not. Due to this, it can be good to
+have a system to shut down servers that are inactive after a configurable
+duration of inactivity or a maximum amount of time. JupyterHub uses the
+[jupyterhub-idle-culler](https://github.com/jupyterhub/jupyterhub-idle-culler)
+to do this.
+
+When a user server has been shut down, the user will have to start their server
+again on next visit. The in-memory state of their previous session will have
+been lost, but opened notebooks are saved regularly into a `.ipynb_checkpoints`
+folder and will typically not cause work to be lost.
 
 ```{note}
-In JupyterHub, "inactivity" is defined as no response from the user's
-browser. JupyterHub constantly pings the user's JupyterHub browser session
-to check whether it is open. This means that leaving the computer running
-with the JupyterHub window open will **not** be treated as inactivity.
+For more details on how the `jupyterhub-idle-culler` works and additional
+configurations you may want to set on the user servers, see the [How it works
+documentation](https://github.com/jupyterhub/jupyterhub-idle-culler#how-it-works).
+
+If you want to configure the culling of kernels that can help stop long running
+code on the user servers, it can be useful to use
+[`singleuser.extraFiles`](schema_singleuser.extraFiles).
 ```
 
-To disable culling, put the following into `config.yaml`:
+To disable `jupyterhub-idle-culler`, put the following into `config.yaml`:
 
 ```yaml
 cull:
   enabled: false
 ```
 
-By default, JupyterHub will run the culling process every ten minutes
-and will cull any user pods that have been inactive for more than one hour.
-You can configure this behavior in your `config.yaml` file with the following
-fields:
-
-```yaml
-cull:
-  timeout: <max-idle-seconds-before-user-pod-is-deleted>
-  every: <number-of-seconds-this-check-is-done>
-```
+The default Helm chart configuration of `jupyterhub-idle-culler` can be
+inspected in the Helm chart's [values.yaml (Helm chart version
+1.0.0)](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/1.0.0/jupyterhub/values.yaml#L529-L536)
+file. The Helm chart's configuration corresponds to flags in the
+[jupyterhub-idle-culler](https://github.com/jupyterhub/jupyterhub-idle-culler)
+package. Full documentation of these and additional flags can be found in
+[jupyterhub-idle-culler's
+documentation](https://github.com/jupyterhub/jupyterhub-idle-culler#as-a-standalone-script).
 
 ```{note}
 While JupyterHub automatically runs the culling process, it is not a

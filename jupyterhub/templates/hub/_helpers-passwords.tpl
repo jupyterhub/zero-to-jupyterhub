@@ -73,3 +73,20 @@
         {{- end }}
     {{- end }}
 {{- end }}
+
+{{- define "jupyterhub.hub.services.get_api_token" -}}
+    {{- $_ := index . 0 }}
+    {{- $service_key := index . 1 }}
+    {{- $explicitly_set_api_token := or ($_.Values.hub.services | dig $service_key "api_token" "") ($_.Values.hub.services | dig $service_key "apiToken" "") }}
+    {{- if $explicitly_set_api_token }}
+        {{- $explicitly_set_api_token }}
+    {{- else }}
+        {{- $k8s_state := lookup "v1" "Secret" $_.Release.Namespace (include "jupyterhub.hub.fullname" $_) | default (dict "data" (dict)) }}
+        {{- $k8s_secret_key := print "hub.services." $service_key ".apiToken" }}
+        {{- if hasKey $k8s_state.data $k8s_secret_key }}
+            {{- index $k8s_state.data $k8s_secret_key | b64dec }}
+        {{- else }}
+            {{- include "jupyterhub.randHex" 64 }}
+        {{- end }}
+    {{- end }}
+{{- end }}

@@ -143,8 +143,12 @@ hub:
           - "-c"
           - "echo Hello from the preStart handler >> /usr/share/message"
   services:
-    tests:
+    test-service-1:
       apiToken: mocked-api-token
+    test-service-2-key:
+      name: test-service-2-name
+      apiToken: mocked-api-token
+    test-service-3: {}
   pdb:
     enabled: true
     maxUnavailable: 1

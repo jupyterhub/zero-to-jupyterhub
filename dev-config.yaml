@@ -43,6 +43,13 @@ hub:
       apiToken: give-pytest-control
     test-hub-existing-secret:
       apiToken: dddd4444
+    test-explicit-name:
+      name: some-explicitly-set-name
+      apiToken: eeee5555
+    # FIXME: add this test at a later time, after 1.1.0, when upgrade tests
+    #        won't break because previous versions doesn't have support for this
+    #        config when this was added.
+    # test-generation-of-apiToken: {}
   networkPolicy:
     egress: # overrides allowance of 0.0.0.0/0
       # In kind/k3s clusters the Kubernetes API server is exposing this port

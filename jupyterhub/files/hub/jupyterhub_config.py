@@ -359,17 +359,15 @@ if get_config("cull.enabled", False):
         }
     )
 
-for name, service in get_config("hub.services", {}).items():
+for key, service in get_config("hub.services", {}).items():
     # c.JupyterHub.services is a list of dicts, but
     # hub.services is a dict of dicts to make the config mergable
-    service.setdefault("name", name)
+    service.setdefault("name", key)
 
     # As the api_token could be exposed in hub.existingSecret, we need to read
     # it it from there or fall back to the chart managed k8s Secret's value.
     service.pop("apiToken", None)
-    api_token = get_secret_value(f"hub.services.{service['name']}.apiToken", None)
-    if api_token:
-        service["api_token"] = api_token
+    service["api_token"] = get_secret_value(f"hub.services.{key}.apiToken")
 
     c.JupyterHub.services.append(service)
 

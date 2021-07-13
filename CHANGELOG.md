@@ -2,6 +2,12 @@
 
 Here you can find upgrade changes in between releases and upgrade instructions.
 
+## UNRELEASED
+
+### Breaking change
+
+- In the rare case that you have configured `hub.services.<some-key>.name=<some-other-name>`, so that the key is different form the name, you should be aware of the rename of the k8s Secret's key containing an api token for the service is now accessible at `hub.services.<some-key>.apiToken` instead of `hub.services.<some-other-name>.apiToken`. This was a change introduced in [#2312](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/pull/2312).
+
 ## [1.0]
 
 ### [1.0.1] - 2021-06-25
